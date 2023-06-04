@@ -57,6 +57,8 @@ public class AVLTree extends Node{
 			}
 			
 			nodeQueue.add(node);
+			checkBalanceFactor(nodeQueue, aux);
+			checkRotation(root);
 			_insert(node.getLeft(), value, nodeQueue);
 		}
 		
@@ -70,6 +72,8 @@ public class AVLTree extends Node{
 			}
 			
 			nodeQueue.add(node);
+			checkBalanceFactor(nodeQueue, aux);
+			checkRotation(root);
 			_insert(node.getRight(), value, nodeQueue);
 		}
 		else
@@ -120,15 +124,7 @@ public class AVLTree extends Node{
 	private void checkRotation(Node node) {
 		System.out.println("FB node" + node.getBalanceFactor());
 		System.out.println("FB esq node" + node.getLeft().getBalanceFactor());
-		if (node.getBalanceFactor() < 1) {
-			System.out.println("Entrou no primeiro if");
-			if(node.getLeft().getBalanceFactor() > 0) {
-				System.out.println("Rotação simples a direita");
-			}
-		} else if (node.getBalanceFactor() < -1) {
-			if(node.getRight().getBalanceFactor() < 0)
-				System.out.println("Rotação simples a esquerda");
-		}
+		System.out.println("Entrou no primeiro if");
 	}
 	
 	public void printTree(Node node) {
