@@ -1,4 +1,5 @@
-import java.util.Stack;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class AVLTree extends Node{
 	private Node root;
@@ -37,80 +38,97 @@ public class AVLTree extends Node{
 		if (root == null) {
 			root = new Node(value);
 			root.setBalanceFactor(0);
+			return;
 		}
 		
-		Stack<Node> nodeStack = new Stack<Node>();
-		_insert(node, value, nodeStack);
+		Queue<Node> nodeQueue = new LinkedList<Node>();
+		_insert(node, value, nodeQueue);
 	}
 	
-	private void _insert(Node node, int value, Stack<Node> nodeStack) {
+	private void _insert(Node node, int value, Queue<Node> nodeQueue) {
 		Node aux = null;
 		if (value < node.getValue()) {
 			if (node.getLeft() == null) {
 				node.setLeft(new Node(value));
-				checkBalanceFactor(nodeStack, aux);
+				nodeQueue.add(node);
+				checkBalanceFactor(nodeQueue, aux);
+				checkRotation(root);
 				return;
 			}
 			
-			nodeStack.push(node);
-			System.out.println("nodeStack = " + nodeStack.lastElement().getValue());
-			_insert(node.getLeft(), value, nodeStack);
+			nodeQueue.add(node);
+			_insert(node.getLeft(), value, nodeQueue);
 		}
 		
 		else if (value > node.getValue()) {
 			if (node.getRight() == null) {
 				node.setRight(new Node(value));
-				checkBalanceFactor(nodeStack, aux);
+				nodeQueue.add(node);
+				checkBalanceFactor(nodeQueue, aux);
+				checkRotation(root);
 				return;
 			}
 			
-			nodeStack.push(node);
-			System.out.println("nodeStack = " + nodeStack.lastElement().getValue());
-			_insert(node.getRight(), value, nodeStack);
+			nodeQueue.add(node);
+			_insert(node.getRight(), value, nodeQueue);
 		}
 		else
 			System.out.println("O valor já existe na árvore");
 	}
 	
-	public void checkBalanceFactor(Stack<Node> nodeStack, Node node) {
+	private void checkBalanceFactor(Queue<Node> nodeQueue, Node node) {
 		if (root == null)
 			return;
 		
-		_checkBalanceFactor(nodeStack, node);
+		_checkBalanceFactor(nodeQueue, node);
 	}
 	
-	private void _checkBalanceFactor(Stack<Node> nodeStack, Node node) {
-		// int[] decideRotation = new int[2];
-		if(!nodeStack.isEmpty())
-			return;
+	private void _checkBalanceFactor(Queue<Node> nodeQueue, Node node) {		
+		node = nodeQueue.poll();
+		int leftSubtreeHeight;
+		int rightSubtreeHeight;
 		
-		System.out.println("_checkBalanceFactor");
-		node = nodeStack.pop();
-		System.out.println("POPed - " + node.getValue());
+		if(node.getLeft() != null)
+			leftSubtreeHeight = countHeight(node.getLeft(), 1);
+		else 
+			leftSubtreeHeight = 0;
 		
-		System.out.println("FB - " + (countHeight(node.getLeft(), 1) - countHeight(node.getRight(), 1)));
-		node.setBalanceFactor(countHeight(node.getLeft(), 1) - countHeight(node.getRight(), 1));
+		if(node.getRight() != null)
+			rightSubtreeHeight = countHeight(node.getRight(), 1);
+		else
+			rightSubtreeHeight = 0;
 		
-		_checkBalanceFactor(nodeStack, node);
+		System.out.println("Node " + node.getValue() + " - FB " + (leftSubtreeHeight - rightSubtreeHeight));
+		node.setBalanceFactor(leftSubtreeHeight - rightSubtreeHeight);
 		
-		// decideRotation[0] = node.getBalanceFactor();
-		
-		// if (node.getBalanceFactor() > 1 || node.getBalanceFactor() < -1) {
-		//	 System.out.println("Rotação simples");
-		// }
+		_checkBalanceFactor(nodeQueue, node);
 	}
 	
-	public int countHeight(Node node, int height) {
+	private int countHeight(Node node, int height) {
 		if (node == null)
 			return 0;
 			
 		if (node.getLeft() != null)
-			countHeight(node.getLeft(), height + 1);
+			return countHeight(node.getLeft(), height + 1);
 		
 		if (node.getRight() != null)
-			countHeight(node.getRight(), height + 1);
+			return countHeight(node.getRight(), height + 1);
 		
 		return height;
+	}
+	
+	private void checkRotation(Node node) {
+		System.out.println("FB node" + node.getBalanceFactor());
+		System.out.println("FB esq node" + node.getLeft().getBalanceFactor());
+		if (node.getBalanceFactor() < 1) {
+			System.out.println("Entrou no primeiro if");
+			if(node.getLeft().getBalanceFactor() > 0) {
+				System.out.println("Rotação simples a direita");
+			}
+		} else if (node.getBalanceFactor() < -1) {
+			if(node.getRight().getBalanceFactor() < 0)
+				System.out.println("Rotação simples a esquerda");
+		}
 	}
 	
 	public void printTree(Node node) {
