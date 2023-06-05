@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 public class AVLTree extends Node{
 	private Node root;
@@ -24,12 +25,13 @@ public class AVLTree extends Node{
 	public Node search(Node node, int value) {
 		if (node == null)
 			return null;
-		else if (node.getValue() == value)
+		
+		if (node.getValue() == value)
 			return node;
 		else if (value > node.getValue() && node.getRight() != null)
 			return search(node.getRight(), value);
-		else if (value < node.getValue() && node.getRight() != null)
-			return search(node.getLeft().getLeft(), value);
+		else if (value < node.getValue() && node.getLeft() != null)
+			return search(node.getLeft(), value);
 		
 		return null;
 	}
@@ -46,19 +48,16 @@ public class AVLTree extends Node{
 	}
 	
 	private void _insert(Node node, int value, Queue<Node> nodeQueue) {
-		Node aux = null;
 		if (value < node.getValue()) {
 			if (node.getLeft() == null) {
 				node.setLeft(new Node(value));
 				nodeQueue.add(node);
-				checkBalanceFactor(nodeQueue, aux);
-				checkRotation(root);
+				checkBalanceFactor(nodeQueue);
+				emergencyAlgorithm(value);
 				return;
 			}
 			
 			nodeQueue.add(node);
-			checkBalanceFactor(nodeQueue, aux);
-			checkRotation(root);
 			_insert(node.getLeft(), value, nodeQueue);
 		}
 		
@@ -66,24 +65,23 @@ public class AVLTree extends Node{
 			if (node.getRight() == null) {
 				node.setRight(new Node(value));
 				nodeQueue.add(node);
-				checkBalanceFactor(nodeQueue, aux);
-				checkRotation(root);
+				checkBalanceFactor(nodeQueue);
+				emergencyAlgorithm(value);
 				return;
 			}
 			
 			nodeQueue.add(node);
-			checkBalanceFactor(nodeQueue, aux);
-			checkRotation(root);
 			_insert(node.getRight(), value, nodeQueue);
 		}
 		else
 			System.out.println("O valor já existe na árvore");
 	}
 	
-	private void checkBalanceFactor(Queue<Node> nodeQueue, Node node) {
+	private void checkBalanceFactor(Queue<Node> nodeQueue) {
 		if (root == null)
 			return;
 		
+		Node node = null;
 		_checkBalanceFactor(nodeQueue, node);
 	}
 	
@@ -92,23 +90,54 @@ public class AVLTree extends Node{
 		int leftSubtreeHeight;
 		int rightSubtreeHeight;
 		
-		if(node.getLeft() != null)
-			leftSubtreeHeight = countHeight(node.getLeft(), 1);
+		if(node.getLeft() != null) {
+			leftSubtreeHeight = countLeftHeight(node.getLeft(), 1);
+		}
 		else 
 			leftSubtreeHeight = 0;
 		
-		if(node.getRight() != null)
-			rightSubtreeHeight = countHeight(node.getRight(), 1);
+		if(node.getRight() != null) {
+			rightSubtreeHeight = countRightHeight(node.getRight(), 1);
+		}
 		else
 			rightSubtreeHeight = 0;
 		
-		System.out.println("Node " + node.getValue() + " - FB " + (leftSubtreeHeight - rightSubtreeHeight));
 		node.setBalanceFactor(leftSubtreeHeight - rightSubtreeHeight);
+		System.out.print("  Node " + node.getValue() + " - BF " + node.getBalanceFactor());
 		
-		_checkBalanceFactor(nodeQueue, node);
+		if(!nodeQueue.isEmpty())
+			_checkBalanceFactor(nodeQueue, node);
+		
+		return;
 	}
 	
-	private int countHeight(Node node, int height) {
+	public int countLeftHeight(Node node, int height) {
+		if (node == null)
+			return 0;
+			
+		if (node.getLeft() != null)
+			return countLeftHeight(node.getLeft(), height + 1);
+		
+		if (node.getRight() != null)
+			return countLeftHeight(node.getRight(), height + 1);
+		
+		return height;
+	}
+	
+	public int countRightHeight(Node node, int height) {
+		if (node == null)
+			return 0;
+			
+		if (node.getRight() != null)
+			return countRightHeight(node.getRight(), height + 1);
+		
+		if (node.getLeft() != null)
+			return countRightHeight(node.getLeft(), height + 1);
+		
+		return height;
+	}
+	
+	public int countHeight(Node node, int height) {
 		if (node == null)
 			return 0;
 			
@@ -121,10 +150,177 @@ public class AVLTree extends Node{
 		return height;
 	}
 	
-	private void checkRotation(Node node) {
-		System.out.println("FB node" + node.getBalanceFactor());
-		System.out.println("FB esq node" + node.getLeft().getBalanceFactor());
-		System.out.println("Entrou no primeiro if");
+	private void checkRotation(Node node, Stack<Node> stack) {
+		Node parent = null;
+		
+		if (!stack.isEmpty())
+			parent = stack.pop();
+		
+		if(node.getBalanceFactor() > 1) {
+			if(node.getLeft().getBalanceFactor() > 0) {
+				System.out.println("RSDireita");
+				if(parent != null)
+					parent.setLeft(rightRotation(node));
+				else
+					rightRotation(node);
+				System.out.println();
+				System.out.println();
+				//printTree(root);
+				return;
+			}
+		}
+		
+		if(node.getBalanceFactor() < -1) {
+			if(node.getRight().getBalanceFactor() < 0) {
+				System.out.println("RSEsquerda");
+				if (parent != null)
+					parent.setRight(leftRotation(node));
+				else
+					leftRotation(node);
+				System.out.println();
+				System.out.println();
+				//printTree(root);
+				return;
+			}
+		}
+		
+		if (node.getBalanceFactor() > 1) {
+			if (node.getLeft().getBalanceFactor() < 0) {
+				System.out.println("RDuplaDireita");
+				doubleRightRotation(node);
+				System.out.println();
+				System.out.println();
+				//printTree(root);
+				return;
+			}
+		}
+		
+		if (node.getBalanceFactor() < -1) {
+			if (node.getRight().getBalanceFactor() > 0) {
+				System.out.println("RDuplaEsquerda");
+				doubleLeftRotation(node);
+				System.out.println();
+				System.out.println();
+				//printTree(root);
+				return;
+			}
+		}
+	}
+	
+	private Node leftRotation(Node node) {
+		System.out.println("****** LEFT ROTATION *******");
+		Node aux = node.getRight();
+		
+		if(aux.getLeft() == null)
+			node.setRight(null);
+		else
+			node.setRight(aux.getLeft());
+		
+		aux.setLeft(node);
+		//node.setRight(null);
+		
+		if(node == root)
+			root = aux;
+
+		return aux;
+	}
+	
+	private Node rightRotation(Node node) {
+		Node aux = node.getLeft();
+		
+		if(aux.getRight() == null)
+			node.setLeft(null);
+		else
+			node.setLeft(aux.getRight());
+		
+		aux.setRight(node);
+		//node.setLeft(null);
+		
+		
+		if(node == root)
+			root = aux;
+
+		return aux;
+	}
+	
+	private Node doubleLeftRotation(Node node) {
+		node.setRight(rightRotation(node.getRight()));
+		return leftRotation(node);
+	}
+	
+	private Node doubleRightRotation(Node node) {
+		node.setLeft(leftRotation(node.getLeft()));
+		return rightRotation(node);
+	}
+	
+	private void emergencyAlgorithm(int value) {
+		Node node = root;
+		Stack<Node> stack = new Stack<Node>();
+		
+		_emergencyAlgorithm(value, node, stack);
+	}
+	
+	private void _emergencyAlgorithm(int value, Node node, Stack<Node> stack) {
+		if (node == null)
+			return;
+		
+		if (value < node.getValue() && node.getLeft() != null) {
+			stack.push(node);
+			_emergencyAlgorithm(value, node.getLeft(), stack);
+		} else if (value > node.getValue() && node.getRight() != null) {
+			stack.push(node);
+			_emergencyAlgorithm(value, node.getRight(), stack);
+		}
+		
+		stackTreatment(stack);
+	}
+	
+	private void stackTreatment(Stack<Node> stack) {
+		if(stack.isEmpty())
+			return;
+		
+		Node node = stack.pop();
+		System.out.print("desempilhou " + node.getValue() + " - FB " + node.getBalanceFactor() + " ");
+		
+		if (node.getBalanceFactor() > 1 || node.getBalanceFactor() < -1) {
+			System.out.println("Entrou no CheckRotation");
+			checkRotation(node, stack);
+		}
+		
+		stackTreatment(stack);
+	}
+	
+	public void remove(int value) {
+		Node node = root;
+		
+		if(search(node, value) == null) {
+			System.out.println("O valor digitado não está na árvore!");
+			return;
+		}
+		
+		if(node.getValue() == value) {
+			root = null;
+			return;
+		}
+		
+		_remove(value, node);
+	}
+	
+	private void _remove(int value, Node node) {		
+		if(node.getLeft() != null)
+			if(value < node.getLeft().getValue()) {
+				_remove(value, node.getLeft());
+			} else if (value == node.getLeft().getValue()) {
+				System.out.println("remover " + value);
+			}
+		
+		if(node.getRight() != null)
+			if(value > node.getRight().getValue()) {
+				_remove(value, node.getRight());
+			} else if (value == node.getRight().getValue()) {
+				System.out.println("remover " + value);
+			}
+				
 	}
 	
 	public void printTree(Node node) {

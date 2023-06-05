@@ -1,9 +1,7 @@
 import javax.swing.JTextField;
 
-public class CRD {
-	AVLTree tree = new AVLTree();
-	
-	public void command(JTextField textField) {
+public class CRD {	
+	public void command(JTextField textField, AVLTree tree) {
 		String userInput = textField.getText();
 		
 		String[] userInputArray = userInput.split(" ");
@@ -16,7 +14,7 @@ public class CRD {
 				tree.printTree(tree.getRoot());
 				break;
 			case "remove":
-				// tree.remove(tree.getRoot(), value);
+				tree.remove(value);
 				System.out.println("Removing " + value);
 				break;
 			case "search":
