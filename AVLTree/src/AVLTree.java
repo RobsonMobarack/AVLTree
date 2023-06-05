@@ -103,7 +103,7 @@ public class AVLTree extends Node{
 			rightSubtreeHeight = 0;
 		
 		node.setBalanceFactor(leftSubtreeHeight - rightSubtreeHeight);
-		System.out.print("  Node " + node.getValue() + " - BF " + node.getBalanceFactor());
+		//System.out.print("  Node " + node.getValue() + " - BF " + node.getBalanceFactor());
 		
 		if(!nodeQueue.isEmpty())
 			_checkBalanceFactor(nodeQueue, node);
@@ -158,7 +158,6 @@ public class AVLTree extends Node{
 		
 		if(node.getBalanceFactor() > 1) {
 			if(node.getLeft().getBalanceFactor() > 0) {
-				System.out.println("RSDireita");
 				if(parent != null)
 					parent.setLeft(rightRotation(node));
 				else
@@ -172,7 +171,6 @@ public class AVLTree extends Node{
 		
 		if(node.getBalanceFactor() < -1) {
 			if(node.getRight().getBalanceFactor() < 0) {
-				System.out.println("RSEsquerda");
 				if (parent != null)
 					parent.setRight(leftRotation(node));
 				else
@@ -186,7 +184,6 @@ public class AVLTree extends Node{
 		
 		if (node.getBalanceFactor() > 1) {
 			if (node.getLeft().getBalanceFactor() < 0) {
-				System.out.println("RDuplaDireita");
 				doubleRightRotation(node);
 				System.out.println();
 				System.out.println();
@@ -197,7 +194,6 @@ public class AVLTree extends Node{
 		
 		if (node.getBalanceFactor() < -1) {
 			if (node.getRight().getBalanceFactor() > 0) {
-				System.out.println("RDuplaEsquerda");
 				doubleLeftRotation(node);
 				System.out.println();
 				System.out.println();
@@ -208,7 +204,7 @@ public class AVLTree extends Node{
 	}
 	
 	private Node leftRotation(Node node) {
-		System.out.println("****** LEFT ROTATION *******");
+		System.out.println("\n\nRotação a esquerda porque FB é negativo e seu filho a direita também tem FB negativo");
 		Node aux = node.getRight();
 		
 		if(aux.getLeft() == null)
@@ -226,6 +222,7 @@ public class AVLTree extends Node{
 	}
 	
 	private Node rightRotation(Node node) {
+		System.out.println("\n\nRotação a direita porque FB é positivo e seu filho a esquerda também tem FB positivo");
 		Node aux = node.getLeft();
 		
 		if(aux.getRight() == null)
@@ -244,11 +241,13 @@ public class AVLTree extends Node{
 	}
 	
 	private Node doubleLeftRotation(Node node) {
+		System.out.println("\n\nRotação a dupla a esquerda porque FB é negativo e seu filho a direita também tem FB positivo");
 		node.setRight(rightRotation(node.getRight()));
 		return leftRotation(node);
 	}
 	
 	private Node doubleRightRotation(Node node) {
+		System.out.println("\n\nRotação a dupla a esquerda porque FB é positivo e seu filho a esquerda também tem FB negativo");
 		node.setLeft(leftRotation(node.getLeft()));
 		return rightRotation(node);
 	}
@@ -280,10 +279,8 @@ public class AVLTree extends Node{
 			return;
 		
 		Node node = stack.pop();
-		System.out.print("desempilhou " + node.getValue() + " - FB " + node.getBalanceFactor() + " ");
 		
 		if (node.getBalanceFactor() > 1 || node.getBalanceFactor() < -1) {
-			System.out.println("Entrou no CheckRotation");
 			checkRotation(node, stack);
 		}
 		
@@ -311,14 +308,20 @@ public class AVLTree extends Node{
 			if(value < node.getLeft().getValue()) {
 				_remove(value, node.getLeft());
 			} else if (value == node.getLeft().getValue()) {
-				System.out.println("remover " + value);
+				if(node.getLeft().getRight() == null)
+					node.setLeft(null);
+				else
+					node.setLeft(node.getLeft().getRight());
 			}
 		
 		if(node.getRight() != null)
 			if(value > node.getRight().getValue()) {
 				_remove(value, node.getRight());
 			} else if (value == node.getRight().getValue()) {
-				System.out.println("remover " + value);
+				if(node.getRight().getRight() == null)
+					node.setRight(null);
+				else
+					node.setRight(node.getRight().getRight());
 			}
 				
 	}

@@ -15,7 +15,6 @@ public class CRD {
 				break;
 			case "remove":
 				tree.remove(value);
-				System.out.println("Removing " + value);
 				break;
 			case "search":
 				Node searchResult = tree.search(tree.getRoot(), value);
