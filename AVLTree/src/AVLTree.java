@@ -2,6 +2,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
+import javax.swing.JOptionPane;
+
 public class AVLTree extends Node{
 	private Node root;
 	
@@ -74,7 +76,7 @@ public class AVLTree extends Node{
 			_insert(node.getRight(), value, nodeQueue);
 		}
 		else
-			System.out.println("O valor já existe na árvore");
+			System.out.println("O valor jï¿½ existe na ï¿½rvore");
 	}
 	
 	private void checkBalanceFactor(Queue<Node> nodeQueue) {
@@ -91,13 +93,13 @@ public class AVLTree extends Node{
 		int rightSubtreeHeight;
 		
 		if(node.getLeft() != null) {
-			leftSubtreeHeight = countLeftHeight(node.getLeft(), 1);
+			leftSubtreeHeight = countHeight(node.getLeft(), 1);
 		}
 		else 
 			leftSubtreeHeight = 0;
 		
 		if(node.getRight() != null) {
-			rightSubtreeHeight = countRightHeight(node.getRight(), 1);
+			rightSubtreeHeight = countHeight(node.getRight(), 1);
 		}
 		else
 			rightSubtreeHeight = 0;
@@ -111,6 +113,19 @@ public class AVLTree extends Node{
 		return;
 	}
 	
+	public int countHeight(Node node, int height){
+        if(node.getLeft() != null && node.getRight() != null){
+            height = Math.max(countHeight(node.getLeft(), height + 1), countHeight(node.getRight(), height + 1));
+        } else if(node.getLeft() != null){
+            height = countHeight(node.getLeft(), height + 1);
+        } else if(node.getRight() != null){
+            height = countHeight(node.getRight(), height + 1);
+        }
+
+        return height;
+    }
+	
+	/*
 	public int countLeftHeight(Node node, int height) {
 		if (node == null)
 			return 0;
@@ -149,6 +164,7 @@ public class AVLTree extends Node{
 		
 		return height;
 	}
+	*/
 	
 	private void checkRotation(Node node, Stack<Node> stack) {
 		Node parent = null;
@@ -204,7 +220,7 @@ public class AVLTree extends Node{
 	}
 	
 	private Node leftRotation(Node node) {
-		System.out.println("\n\nRotação a esquerda porque FB é negativo e seu filho a direita também tem FB negativo");
+		System.out.println("\n\nRotaï¿½ï¿½o a esquerda porque FB ï¿½ negativo e seu filho a direita tambï¿½m tem FB negativo");
 		Node aux = node.getRight();
 		
 		if(aux.getLeft() == null)
@@ -222,7 +238,7 @@ public class AVLTree extends Node{
 	}
 	
 	private Node rightRotation(Node node) {
-		System.out.println("\n\nRotação a direita porque FB é positivo e seu filho a esquerda também tem FB positivo");
+		System.out.println("\n\nRotaï¿½ï¿½o a direita porque FB ï¿½ positivo e seu filho a esquerda tambï¿½m tem FB positivo");
 		Node aux = node.getLeft();
 		
 		if(aux.getRight() == null)
@@ -241,13 +257,13 @@ public class AVLTree extends Node{
 	}
 	
 	private Node doubleLeftRotation(Node node) {
-		System.out.println("\n\nRotação a dupla a esquerda porque FB é negativo e seu filho a direita também tem FB positivo");
+		System.out.println("\n\nRotaï¿½ï¿½o a dupla a esquerda porque FB ï¿½ negativo e seu filho a direita tambï¿½m tem FB positivo");
 		node.setRight(rightRotation(node.getRight()));
 		return leftRotation(node);
 	}
 	
 	private Node doubleRightRotation(Node node) {
-		System.out.println("\n\nRotação a dupla a esquerda porque FB é positivo e seu filho a esquerda também tem FB negativo");
+		System.out.println("\n\nRotaï¿½ï¿½o a dupla a esquerda porque FB ï¿½ positivo e seu filho a esquerda tambï¿½m tem FB negativo");
 		node.setLeft(leftRotation(node.getLeft()));
 		return rightRotation(node);
 	}
@@ -291,18 +307,51 @@ public class AVLTree extends Node{
 		Node node = root;
 		
 		if(search(node, value) == null) {
-			System.out.println("O valor digitado não está na árvore!");
+			System.out.println("O valor digitado nï¿½o estï¿½ na ï¿½rvore!");
 			return;
 		}
 		
-		if(node.getValue() == value) {
+		if(node.getValue() == value && node.getLeft() == null && node.getRight() == null) {
 			root = null;
 			return;
-		}
+		} else if(node.getValue() == value && node.getRight() != null) {
+        	root = node.getRight();
+        	return;
+        }else if (node.getValue() == value && node.getLeft() != null) {
+        	root = node.getLeft();
+        	return;
+        }
 		
 		_remove(value, node);
 	}
 	
+	private Node _remove(int value, Node node) {
+        if (value < node.getValue()) {
+            node.setLeft(_remove(value, node.getLeft()));
+        } else if (value > node.getValue()) {
+            node.setRight(_remove(value, node.getRight()));
+        } else {
+            if (node.getLeft() == null && node.getRight() == null) {
+                node = null;
+            } else if (node.getLeft() == null) {
+                node = node.getRight();
+            } else if (node.getRight() == null) {
+                node = node.getLeft();
+            } else {
+                Node aux = node.getLeft();
+                while (aux.getRight() != null) {
+                    aux = aux.getRight();
+                }
+                node.setValue(aux.getValue());
+                aux.setValue(value);
+                node.setLeft(_remove(value, node.getLeft()));
+            }
+        }
+
+        return node;
+    }
+	
+	/*
 	private void _remove(int value, Node node) {		
 		if(node.getLeft() != null)
 			if(value < node.getLeft().getValue()) {
@@ -325,6 +374,7 @@ public class AVLTree extends Node{
 			}
 				
 	}
+	*/
 	
 	public void printTree(Node node) {
 		if (node.getLeft() != null)

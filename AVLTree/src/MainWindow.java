@@ -21,7 +21,7 @@ public class MainWindow implements ActionListener{
 	public static final int NODE_GAP = 30;
 	
 	public MainWindow() {
-		JFrame frame = new JFrame("Árvore AVL");
+		JFrame frame = new JFrame("ï¿½rvore AVL");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(null);
 		frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -54,12 +54,12 @@ public class MainWindow implements ActionListener{
 				g.drawString(Integer.toString(node.getValue()), positionX + xAdjust, positionY + 20);
 				
 				if(node.getLeft() != null) {
-					g.drawLine(positionX + 5, positionY + 25, (int)(positionX - horizontalSpace*Math.pow(2, tree.countHeight(tree.getRoot(), 1) - 1) + 12), positionY + verticalSpace);
-					drawTree(g, node.getLeft(), (int)(positionX - horizontalSpace*Math.pow(2, tree.countHeight(tree.getRoot(), 1) - 1)), positionY + verticalSpace, horizontalSpace, verticalSpace);
+					g.drawLine(positionX + 5, positionY + 25, (int)(positionX - horizontalSpace*Math.pow(2, tree.countHeight(node, 1) - 1) + 12), positionY + verticalSpace);
+					drawTree(g, node.getLeft(), (int)(positionX - horizontalSpace*Math.pow(2, tree.countHeight(node, 1) - 1)), positionY + verticalSpace, horizontalSpace, verticalSpace);
 				}
 				if(node.getRight() != null) {
-					g.drawLine(positionX + 25, positionY + 25, (int)(positionX + horizontalSpace*Math.pow(2, tree.countHeight(tree.getRoot(), 1) - 1) + 18), positionY + verticalSpace);
-					drawTree(g, node.getRight(), (int)(positionX + horizontalSpace*Math.pow(2, tree.countHeight(tree.getRoot(), 1) - 1)), positionY + verticalSpace, horizontalSpace, verticalSpace);
+					g.drawLine(positionX + 25, positionY + 25, (int)(positionX + horizontalSpace*Math.pow(2, tree.countHeight(node, 1) - 1) + 18), positionY + verticalSpace);
+					drawTree(g, node.getRight(), (int)(positionX + horizontalSpace*Math.pow(2, tree.countHeight(node, 1) - 1)), positionY + verticalSpace, horizontalSpace, verticalSpace);
 				}
 			}
 		};
