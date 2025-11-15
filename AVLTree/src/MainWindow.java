@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -21,14 +23,15 @@ public class MainWindow implements ActionListener{
 	public static final int NODE_GAP = 30;
 	
 	public MainWindow() {
-		JFrame frame = new JFrame("ï¿½rvore AVL");
+		JFrame frame = new JFrame("Árvore AVL");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(null);
 		frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		
-		JPanel inputPanel = new JPanel();		
+		JPanel inputPanel = new JPanel();
+		inputPanel.setBackground(Color.white);
 		inputPanel.setBounds(0, 0, WINDOW_WIDTH, 36);
 		frame.add(inputPanel);
 		
@@ -65,13 +68,39 @@ public class MainWindow implements ActionListener{
 		};
 
 		treePanel.setBackground(Color.white);
-		treePanel.setBounds(0, 36, WINDOW_WIDTH, 664);
+		treePanel.setBounds(70, 36, WINDOW_WIDTH, 664);
 		
+		JPanel comandTextPanel = new JPanel();
+		comandTextPanel.setBackground(Color.white);
+		comandTextPanel.setBounds(0, 36, 70, WINDOW_HEIGHT);
+		
+		JLabel titleLabel = new JLabel("Comandos");
+		titleLabel.setFont(new Font("Arial", Font.BOLD, 12));
+		
+		JLabel labelInsert = new JLabel("insert x");
+		labelInsert.setForeground(Color.red);
+		JLabel labelRemove = new JLabel("remove x");
+		labelRemove.setForeground(Color.red);
+		JLabel labelSearch = new JLabel("search x");
+		labelSearch.setForeground(Color.red);
+		
+		comandTextPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+		
+		comandTextPanel.add(titleLabel);
+		comandTextPanel.add(labelInsert);
+		comandTextPanel.add(labelRemove);
+		comandTextPanel.add(labelSearch);
+		
+		frame.add(comandTextPanel);
 		frame.add(treePanel);
 		
 		textField = new JTextField();
 		textField.setPreferredSize(new Dimension(200, 25));
 		inputPanel.add(textField);
+		
+		// ------------------
+		//test();
+		// ------------------
 		
 		textField.addKeyListener(new KeyAdapter() {
 		    @Override
@@ -105,5 +134,70 @@ public class MainWindow implements ActionListener{
 			textField.setText("");
 			JOptionPane.showMessageDialog(null, e);
 		}
+	}
+	
+	private void test() {
+		textField.setText("insert 8");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 4");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 12");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 2");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 6");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 10");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 14");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 1");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 3");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 5");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 7");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 9");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 11");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 13");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		textField.setText("insert 15");
+		crd.command(textField, tree);
+		textField.setText("");
+		
+		treePanel.repaint();
+		
 	}
 }

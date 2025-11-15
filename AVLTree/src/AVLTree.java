@@ -54,8 +54,8 @@ public class AVLTree extends Node{
 			if (node.getLeft() == null) {
 				node.setLeft(new Node(value));
 				nodeQueue.add(node);
-				checkBalanceFactor(nodeQueue);
-				emergencyAlgorithm(value);
+				updateBalanceFactor(nodeQueue);
+				stackPathToValue(value);
 				return;
 			}
 			
@@ -67,8 +67,8 @@ public class AVLTree extends Node{
 			if (node.getRight() == null) {
 				node.setRight(new Node(value));
 				nodeQueue.add(node);
-				checkBalanceFactor(nodeQueue);
-				emergencyAlgorithm(value);
+				updateBalanceFactor(nodeQueue);
+				stackPathToValue(value);
 				return;
 			}
 			
@@ -76,18 +76,18 @@ public class AVLTree extends Node{
 			_insert(node.getRight(), value, nodeQueue);
 		}
 		else
-			System.out.println("O valor jï¿½ existe na ï¿½rvore");
+			System.out.println("O valor já existe na árvore");
 	}
 	
-	private void checkBalanceFactor(Queue<Node> nodeQueue) {
+	private void updateBalanceFactor(Queue<Node> nodeQueue) {
 		if (root == null)
 			return;
 		
 		Node node = null;
-		_checkBalanceFactor(nodeQueue, node);
+		_updateBalanceFactor(nodeQueue, node);
 	}
 	
-	private void _checkBalanceFactor(Queue<Node> nodeQueue, Node node) {		
+	private void _updateBalanceFactor(Queue<Node> nodeQueue, Node node) {		
 		node = nodeQueue.poll();
 		int leftSubtreeHeight;
 		int rightSubtreeHeight;
@@ -105,10 +105,9 @@ public class AVLTree extends Node{
 			rightSubtreeHeight = 0;
 		
 		node.setBalanceFactor(leftSubtreeHeight - rightSubtreeHeight);
-		//System.out.print("  Node " + node.getValue() + " - BF " + node.getBalanceFactor());
 		
 		if(!nodeQueue.isEmpty())
-			_checkBalanceFactor(nodeQueue, node);
+			_updateBalanceFactor(nodeQueue, node);
 		
 		return;
 	}
@@ -125,47 +124,6 @@ public class AVLTree extends Node{
         return height;
     }
 	
-	/*
-	public int countLeftHeight(Node node, int height) {
-		if (node == null)
-			return 0;
-			
-		if (node.getLeft() != null)
-			return countLeftHeight(node.getLeft(), height + 1);
-		
-		if (node.getRight() != null)
-			return countLeftHeight(node.getRight(), height + 1);
-		
-		return height;
-	}
-	
-	public int countRightHeight(Node node, int height) {
-		if (node == null)
-			return 0;
-			
-		if (node.getRight() != null)
-			return countRightHeight(node.getRight(), height + 1);
-		
-		if (node.getLeft() != null)
-			return countRightHeight(node.getLeft(), height + 1);
-		
-		return height;
-	}
-	
-	public int countHeight(Node node, int height) {
-		if (node == null)
-			return 0;
-			
-		if (node.getLeft() != null)
-			return countHeight(node.getLeft(), height + 1);
-		
-		if (node.getRight() != null)
-			return countHeight(node.getRight(), height + 1);
-		
-		return height;
-	}
-	*/
-	
 	private void checkRotation(Node node, Stack<Node> stack) {
 		Node parent = null;
 		
@@ -174,53 +132,72 @@ public class AVLTree extends Node{
 		
 		if(node.getBalanceFactor() > 1) {
 			if(node.getLeft().getBalanceFactor() > 0) {
-				if(parent != null)
+				if(parent != null) {
+					//System.out.println("\n\nRotação a direita porque FB é positivo e seu filho a esquerda também tem FB positivo");
+					JOptionPane.showMessageDialog(null, "Rotação a direita porque FB é positivo e seu filho a esquerda também tem FB positivo");
 					parent.setLeft(rightRotation(node));
-				else
+				} else {
+					//System.out.println("\n\nRotação a direita porque FB é positivo e seu filho a esquerda também tem FB positivo");
+					JOptionPane.showMessageDialog(null, "Rotação a direita porque FB é positivo e seu filho a esquerda também tem FB positivo");
 					rightRotation(node);
+				}
+				
 				System.out.println();
 				System.out.println();
-				//printTree(root);
+				
+				return;
+			} else if (node.getLeft().getBalanceFactor() < 0) {
+				if (parent != null) {
+					//System.out.println("\n\nRotação a dupla a direita porque FB é positivo e seu filho a esquerda tem FB negativo");
+					JOptionPane.showMessageDialog(null, "Rotação a dupla a direita porque FB é positivo e seu filho a esquerda tem FB negativo");
+					parent.setLeft(doubleRightRotation(node));
+				} else {
+					//System.out.println("\n\nRotação a dupla a direita porque FB é positivo e seu filho a esquerda tem FB negativo");
+					JOptionPane.showMessageDialog(null, "Rotação a dupla a direita porque FB é positivo e seu filho a esquerda tem FB negativo");
+					doubleRightRotation(node);
+				}
+				
+				System.out.println();
+				System.out.println();
+
 				return;
 			}
-		}
-		
-		if(node.getBalanceFactor() < -1) {
+		} else if(node.getBalanceFactor() < -1) {
 			if(node.getRight().getBalanceFactor() < 0) {
-				if (parent != null)
+				if (parent != null) {
+					//System.out.println("\n\nnRotação a esquerda porque FB é negativo e seu filho a direita também tem FB negativo");
+					JOptionPane.showMessageDialog(null, "Rotação a esquerda porque FB é negativo e seu filho a direita também tem FB negativo");
 					parent.setRight(leftRotation(node));
-				else
+				} else {
+					//System.out.println("\n\nRotação a esquerda porque FB é negativo e seu filho a direita também tem FB negativo");
+					JOptionPane.showMessageDialog(null, "Rotação a esquerda porque FB é negativo e seu filho a direita também tem FB negativo");
 					leftRotation(node);
+				}
+				
 				System.out.println();
 				System.out.println();
-				//printTree(root);
+				
 				return;
-			}
-		}
-		
-		if (node.getBalanceFactor() > 1) {
-			if (node.getLeft().getBalanceFactor() < 0) {
-				doubleRightRotation(node);
+			} else if (node.getRight().getBalanceFactor() > 0) {
+				if (parent != null) {
+					//System.out.println("\n\nRotação a dupla a esquerda porque FB é negativo e seu filho a direita tem FB positivo");
+					JOptionPane.showMessageDialog(null, "Rotação a dupla a esquerda porque FB é negativo e seu filho a direita tem FB positivo");
+					parent.setRight(doubleLeftRotation(node));
+				} else {
+					//System.out.println("\n\nRotação a dupla a esquerda porque FB é negativo e seu filho a direita tem FB positivo");
+					JOptionPane.showMessageDialog(null, "Rotação a dupla a esquerda porque FB é negativo e seu filho a direita tem FB positivo");
+					doubleLeftRotation(node);
+				}
+				
 				System.out.println();
 				System.out.println();
-				//printTree(root);
-				return;
-			}
-		}
-		
-		if (node.getBalanceFactor() < -1) {
-			if (node.getRight().getBalanceFactor() > 0) {
-				doubleLeftRotation(node);
-				System.out.println();
-				System.out.println();
-				//printTree(root);
+
 				return;
 			}
 		}
 	}
 	
 	private Node leftRotation(Node node) {
-		System.out.println("\n\nRotaï¿½ï¿½o a esquerda porque FB ï¿½ negativo e seu filho a direita tambï¿½m tem FB negativo");
 		Node aux = node.getRight();
 		
 		if(aux.getLeft() == null)
@@ -238,7 +215,6 @@ public class AVLTree extends Node{
 	}
 	
 	private Node rightRotation(Node node) {
-		System.out.println("\n\nRotaï¿½ï¿½o a direita porque FB ï¿½ positivo e seu filho a esquerda tambï¿½m tem FB positivo");
 		Node aux = node.getLeft();
 		
 		if(aux.getRight() == null)
@@ -246,135 +222,141 @@ public class AVLTree extends Node{
 		else
 			node.setLeft(aux.getRight());
 		
-		aux.setRight(node);
-		//node.setLeft(null);
-		
+		aux.setRight(node);		
 		
 		if(node == root)
 			root = aux;
-
+		
 		return aux;
 	}
 	
 	private Node doubleLeftRotation(Node node) {
-		System.out.println("\n\nRotaï¿½ï¿½o a dupla a esquerda porque FB ï¿½ negativo e seu filho a direita tambï¿½m tem FB positivo");
 		node.setRight(rightRotation(node.getRight()));
 		return leftRotation(node);
 	}
 	
 	private Node doubleRightRotation(Node node) {
-		System.out.println("\n\nRotaï¿½ï¿½o a dupla a esquerda porque FB ï¿½ positivo e seu filho a esquerda tambï¿½m tem FB negativo");
 		node.setLeft(leftRotation(node.getLeft()));
 		return rightRotation(node);
 	}
 	
-	private void emergencyAlgorithm(int value) {
+	private void stackPathToValue(int value) {
 		Node node = root;
 		Stack<Node> stack = new Stack<Node>();
 		
-		_emergencyAlgorithm(value, node, stack);
+		_stackPathToValue(value, node, stack);
 	}
 	
-	private void _emergencyAlgorithm(int value, Node node, Stack<Node> stack) {
+	private void _stackPathToValue(int value, Node node, Stack<Node> stack) {
 		if (node == null)
 			return;
 		
 		if (value < node.getValue() && node.getLeft() != null) {
 			stack.push(node);
-			_emergencyAlgorithm(value, node.getLeft(), stack);
+			_stackPathToValue(value, node.getLeft(), stack);
 		} else if (value > node.getValue() && node.getRight() != null) {
 			stack.push(node);
-			_emergencyAlgorithm(value, node.getRight(), stack);
+			_stackPathToValue(value, node.getRight(), stack);
 		}
 		
-		stackTreatment(stack);
+		rotationNeeded(stack);
 	}
 	
-	private void stackTreatment(Stack<Node> stack) {
+	private void rotationNeeded(Stack<Node> stack) {
 		if(stack.isEmpty())
 			return;
 		
 		Node node = stack.pop();
 		
-		if (node.getBalanceFactor() > 1 || node.getBalanceFactor() < -1) {
+		if (node.getBalanceFactor() > 1 || node.getBalanceFactor() < -1)
 			checkRotation(node, stack);
-		}
 		
-		stackTreatment(stack);
+		rotationNeeded(stack);
 	}
 	
 	public void remove(int value) {
 		Node node = root;
 		
 		if(search(node, value) == null) {
-			System.out.println("O valor digitado nï¿½o estï¿½ na ï¿½rvore!");
+			System.out.println("O valor digitado não está na árvore!");
 			return;
 		}
 		
 		if(node.getValue() == value && node.getLeft() == null && node.getRight() == null) {
 			root = null;
 			return;
-		} else if(node.getValue() == value && node.getRight() != null) {
-        	root = node.getRight();
+		} else if(node.getValue() == value && node.getLeft() != null) {
+			if(node.getLeft().getRight() != null) {
+				Node aux = node.getLeft();
+				Node parent = node;
+				while(aux.getRight() != null) {
+					parent = aux;
+					aux = aux.getRight();
+				}
+				parent.setRight(null);
+				aux.setRight(node.getRight());
+				aux.setLeft(node.getLeft());
+				root = aux;
+			}
+			else {
+				node.getLeft().setRight(node.getRight());
+				root = node.getLeft();
+			}
+			
         	return;
-        }else if (node.getValue() == value && node.getLeft() != null) {
-        	root = node.getLeft();
+        }else if (node.getValue() == value && node.getRight() != null) {
+        	
+        	root = node.getRight();
         	return;
         }
 		
-		_remove(value, node);
+		Queue<Node> nodeQueue = new LinkedList<Node>();
+		_remove(value, node, nodeQueue);
 	}
 	
-	private Node _remove(int value, Node node) {
+	private Node _remove(int value, Node node, Queue<Node> nodeQueue) {		
         if (value < node.getValue()) {
-            node.setLeft(_remove(value, node.getLeft()));
+        	nodeQueue.add(node);
+            node.setLeft(_remove(value, node.getLeft(), nodeQueue));
         } else if (value > node.getValue()) {
-            node.setRight(_remove(value, node.getRight()));
+        	nodeQueue.add(node);
+        	node.setRight(_remove(value, node.getRight(), nodeQueue));
         } else {
             if (node.getLeft() == null && node.getRight() == null) {
                 node = null;
+                updateBalanceFactor(nodeQueue);
+				stackPathToValue(value);
             } else if (node.getLeft() == null) {
                 node = node.getRight();
+                updateBalanceFactor(nodeQueue);
+				stackPathToValue(value);
             } else if (node.getRight() == null) {
                 node = node.getLeft();
+                updateBalanceFactor(nodeQueue);
+				stackPathToValue(value);
             } else {
                 Node aux = node.getLeft();
+                Node parent = node;
                 while (aux.getRight() != null) {
+                	nodeQueue.add(aux);
+                	parent = aux;
                     aux = aux.getRight();
                 }
-                node.setValue(aux.getValue());
-                aux.setValue(value);
-                node.setLeft(_remove(value, node.getLeft()));
+                aux.setRight(node.getRight());
+                if(aux != node.getLeft())
+                	aux.setLeft(node.getLeft());
+                else
+                	aux.setLeft(null);
+                
+                parent.setRight(null);
+                node = aux;
+                updateBalanceFactor(nodeQueue);
+				stackPathToValue(value);
             }
         }
 
         return node;
     }
-	
-	/*
-	private void _remove(int value, Node node) {		
-		if(node.getLeft() != null)
-			if(value < node.getLeft().getValue()) {
-				_remove(value, node.getLeft());
-			} else if (value == node.getLeft().getValue()) {
-				if(node.getLeft().getRight() == null)
-					node.setLeft(null);
-				else
-					node.setLeft(node.getLeft().getRight());
-			}
-		
-		if(node.getRight() != null)
-			if(value > node.getRight().getValue()) {
-				_remove(value, node.getRight());
-			} else if (value == node.getRight().getValue()) {
-				if(node.getRight().getRight() == null)
-					node.setRight(null);
-				else
-					node.setRight(node.getRight().getRight());
-			}
-				
-	}
-	*/
 	
 	public void printTree(Node node) {
 		if (node.getLeft() != null)

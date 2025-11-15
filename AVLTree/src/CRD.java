@@ -1,3 +1,4 @@
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class CRD {	
@@ -19,9 +20,9 @@ public class CRD {
 			case "search":
 				Node searchResult = tree.search(tree.getRoot(), value);
 				if(searchResult != null)
-					System.out.println("Resultado da busca do valor " + value + " = " + searchResult.getValue());
+					JOptionPane.showMessageDialog(null, "Resultado da busca do valor " + value + " = " + searchResult.getValue());
 				else
-					System.out.println("Resultado da busca do valor " + value + " = null");
+					JOptionPane.showMessageDialog(null, "Resultado da busca do valor " + value + " = null");
 				break;
 		}
 	}
