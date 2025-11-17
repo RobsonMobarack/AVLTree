@@ -11,7 +11,7 @@ This project is an academic implementation of an **AVL Tree (Adelson-Velsky and 
 
 This repository was created to demonstrate skills in Java, advanced data structures, and GUI development, applying concepts learned in the **"Algorithms and Programming - Trees and Sorting"** university course.
 
-![[INSERT A SCREENSHOT OR GIF OF YOUR GUI HERE]](https://github.com/RobsonMobarack/AVLTree/Assets/AVLTree.jpg)
+![GUI SCREENSHOT](https://github.com/RobsonMobarack/AVLTree/blob/master/Assets/AVLTree.jpg)
 _(Todo: Record a short GIF showing insertion, search, and a rotation happening!)_
 
 ---
