@@ -55,7 +55,7 @@ Beyond the core requirements, this implementation includes:
 
 1.  Clone this repository:
     ```bash
-    git clone [https://github.com/RobsonMobarack/AVLTree](https://github.com/RobsonMobarack/AVLTree)
+    git clone https://github.com/RobsonMobarack/AVLTree
     ```
 2.  Open the project in your preferred Java IDE (e.g., Eclipse, IntelliJ IDEA, or NetBeans).
 3.  Locate the main class responsible for initializing the `JFrame`.
