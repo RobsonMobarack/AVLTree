@@ -2,7 +2,7 @@
   <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java">
   <img src="https://img.shields.io/badge/Java_Swing-F89820?style=for-the-badge&logo=java&logoColor=white" alt="Java Swing">
   <img src="https://img.shields.io/badge/Data_Structure-AVL_Tree-blue?style=for-the-badge" alt="Data Structure: AVL Tree">
-  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License: MIT">
+  <!-- <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License: MIT"> -->
 </p>
 
 # AVL Tree Implementation with Java Swing GUI
